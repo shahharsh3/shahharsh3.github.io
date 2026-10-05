@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The address bar holds a one-time eBay authorization code; never leak it via Referer. -->
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>eBay sign-in complete</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1 class="ok">✓ eBay sign-in complete</h1>
+    <p id="instructions">Copy the full address below and paste it into the CS Agent dashboard
+      (<b>Settings → eBay connection</b>), then click <b>Connect</b>. It expires in a few minutes.</p>
+    <textarea id="url" class="url" readonly></textarea>
+    <button id="copy" type="button">Copy URL</button>
+    <p><small>This page doesn't send the code anywhere; it only displays it.</small></p>
+  </div>
+</main>
+<script>
+  const box = document.getElementById('url');
+  const btn = document.getElementById('copy');
+  box.value = location.href;
+  if (!new URLSearchParams(location.search).has('code')) {
+    document.getElementById('instructions').textContent =
+      'No authorization code found in this address. Start again from the dashboard.';
+  }
+  btn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(location.href); }
+    catch { box.select(); document.execCommand('copy'); }
+    btn.textContent = 'Copied ✓';
+  });
+</script>
+</body>
+</html>
